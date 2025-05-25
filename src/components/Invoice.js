@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { InvoiceSDK } from '../utils/InvoiceSDK';
 import { TaxCalculator } from '../utils/TaxCalculator';
-import { NotificationSDK } from '../utils/NotificationSDK';
 import InvoiceList from './InvoiceList';
 import InvoiceOutput from './InvoiceOutput';
-import Notifications from './Notifications';
+import ReminderForm from './ReminderForm';
 
 const Invoice = () => {
   const [invoice, setInvoice] = useState(null);
   const [invoices, setInvoices] = useState([]);
-  const [notifications, setNotifications] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     clientId: '',
@@ -108,16 +106,6 @@ const Invoice = () => {
       }
 
       setInvoice(newInvoice);
-
-      // Create and send notification
-      const notification = NotificationSDK.createNotification(
-        newInvoice.invoiceId,
-        newInvoice.dueDate,
-        { email: 'client@example.com' }
-      );
-
-      const sentNotification = await NotificationSDK.sendNotification(notification);
-      setNotifications(prev => [...prev, sentNotification]);
 
       setFormData({
         clientId: '',
@@ -238,9 +226,17 @@ const Invoice = () => {
         </form>
       </div>
 
-      {invoice && !isEditing && <InvoiceOutput invoice={invoice} />}
-
-      <Notifications notifications={notifications} />
+      {invoice && !isEditing && (
+        <>
+          <InvoiceOutput invoice={invoice} />
+          <ReminderForm 
+            invoice={invoice}
+            onRemindersSent={(results) => {
+              console.log('Reminders sent:', results);
+            }}
+          />
+        </>
+      )}
 
       <InvoiceList 
         invoices={invoices} 

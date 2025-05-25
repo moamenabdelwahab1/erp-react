@@ -1,5 +1,5 @@
 {
-  
+  "homepage": " https://moamenabdelwahab1.github.io/erp-react",
   
   "name": "invoice-cost-management",
   
@@ -58,7 +58,8 @@
   
   "start": "react-scripts start",
   
-  
+  "predeploy":"npm run build",
+  "deploy":"gh-pages -d build",
     
   
   "build": "react-scripts build",
